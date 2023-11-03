@@ -20,6 +20,8 @@ class DataIngestion:
                 filename = self.config.local_data_file
             )
             logger.info(f"{filename} downloaded! with following info: \n{headers}")
+        else:
+            logger.info(f"File already exists of size: {get_size(Path(self.config.local_data_file))}")
         
 
     def _get_updated_list_of_files(self, list_of_files):
@@ -31,13 +33,14 @@ class DataIngestion:
             zf.extract(member=f, path=working_dir)
             
         if os.path.getsize(target_filepath) == 0:
+            logger.info(f"removing file:{target_filepath} of size: {get_size(Path(target_filepath))}")
             os.remove(target_filepath)
 
     def unzip_and_clean(self):
         with ZipFile(file=self.config.local_data_file, mode='r') as zf:
             list_of_files = zf.namelist()
             updated_list_of_files = self._get_updated_list_of_files(list_of_files)
-            for f in updated_list_of_files:
+            for f in tqdm(updated_list_of_files):
                 self._preprocess(zf, f, self.config.unzip_dir)
 
 
