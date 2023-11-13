@@ -97,7 +97,7 @@ Email: tejas05in@yahoo.co.in
 
 	
 ## 3. Create ECR repo to store/save docker image
-    - Save the URI: 566373416292.dkr.ecr.us-east-1.amazonaws.com/catdog
+    - Save the URI: 186341999825.dkr.ecr.ap-northeast-1.amazonaws.com/catdog
 
 	
 ## 4. Create EC2 machine (Ubuntu) 
