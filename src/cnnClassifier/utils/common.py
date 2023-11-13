@@ -1,3 +1,4 @@
+import base64
 import os
 from box.exceptions import BoxValueError
 import yaml
@@ -8,6 +9,7 @@ from pathlib import Path
 import joblib
 import json
 from typing import Any
+
 
 @ensure_annotations
 def read_yaml(path_to_yaml: Path) -> ConfigBox:
@@ -43,12 +45,13 @@ def create_directories(path_to_directories: list, verbose=True):
         ignore_log (bool, optional): ignore if multiple directories is to be created. Defaults to False.
     """
     for path in path_to_directories:
-        os.makedirs(path,exist_ok=True)
+        os.makedirs(path, exist_ok=True)
         if verbose:
             logger.info(f"creating directory at: {path}")
 
+
 @ensure_annotations
-def save_json(path:Path,data:dict):
+def save_json(path: Path, data: dict):
     """save json data
 
     Args:
@@ -57,12 +60,12 @@ def save_json(path:Path,data:dict):
 
     """
     with open(path, 'w') as f:
-        json.dump(data, f,indent=4)
+        json.dump(data, f, indent=4)
     logger.info(f"json file saved at: {path}")
 
 
 @ensure_annotations
-def load_json(path:Path)->ConfigBox:
+def load_json(path: Path) -> ConfigBox:
     """load json file data
 
 
@@ -77,6 +80,7 @@ def load_json(path:Path)->ConfigBox:
     logger.info(f"json file loaded successfully from : {path}")
     return ConfigBox(content)
 
+
 @ensure_annotations
 def save_bin(data: Any, path: Path):
     """save binary file
@@ -87,6 +91,7 @@ def save_bin(data: Any, path: Path):
     """
     joblib.dump(value=data, filename=path)
     logger.info(f"binary file saved at: {path}")
+
 
 @ensure_annotations
 def load_bin(path: Path) -> Any:
@@ -102,8 +107,9 @@ def load_bin(path: Path) -> Any:
     logger.info(f"binary file loaded from: {path}")
     return data
 
+
 @ensure_annotations
-def get_size(path:Path) -> str:
+def get_size(path: Path) -> str:
     """get size in KB
 
     Args:
@@ -112,8 +118,17 @@ def get_size(path:Path) -> str:
     Returns:
         str: size in KB
     """
-    size_in_kb = round(os.path.getsize(path)/1024)
+    size_in_kb = round(os.path.getsize(path) / 1024)
     return f"~{size_in_kb} KB"
 
 
+def decodeImage(imgstring, fileName):
+    imgdata = base64.b64decode(imgstring)
+    with open(fileName, 'wb') as f:
+        f.write(imgdata)
+        f.close()
 
+
+def encodeImageIntoBase64(croppedImagePath):
+    with open(croppedImagePath, "rb") as f:
+        return base64.b64encode(f.read())
